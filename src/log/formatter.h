@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-03 14:18:39
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-07 17:24:22
+ * @LastEditTime: 2024-04-08 17:17:05
  * @Description: 
  */
 
@@ -13,10 +13,10 @@
 #include <memory>
 #include <string>
 
-#include "log.h"
-
 namespace tools {
 namespace log {
+
+struct Msg;
 
 /**
  * 日志格式器, 用于解析和储存格式顺序

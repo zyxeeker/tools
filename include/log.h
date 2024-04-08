@@ -2,23 +2,25 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-03-29 14:36:59
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-02 18:13:31
+ * @LastEditTime: 2024-04-08 17:16:23
  * @Description: 
  */
 
+#include <vector>
+#include <memory>
 #include <sstream>
 
 #ifndef LOG_H
 #define LOG_H
 
-#define LOG_IMPL(LVL, ...) \
-  tools::log::Logger(__FILE__, __FUNCTION__, __LINE__, \
-    tools::log::level::LVL) << tools::log::Logger::CStringToStdString(__VA_ARGS__)
-#define LOG(...)    LOG_IMPL(INFO, __VA_ARGS__)
-#define LOG_D(...)  LOG_IMPL(DEBUG, __VA_ARGS__)
-#define LOG_W(...)  LOG_IMPL(WARN, __VA_ARGS__)
-#define LOG_E(...)  LOG_IMPL(ERROR, __VA_ARGS__)
-#define LOG_F(...)  LOG_IMPL(FATAL, __VA_ARGS__)
+#define T_LOG_IMPL(NAME, LVL, ...) \
+  tools::log::Log(__FILE__, __FUNCTION__, __LINE__, \
+    tools::log::level::LVL, NAME) << tools::log::Log::CStringToStdString(__VA_ARGS__)
+#define T_LOG(NAME, ...)    T_LOG_IMPL(NAME, INFO, __VA_ARGS__)
+#define T_LOG_D(NAME, ...)  T_LOG_IMPL(NAME, DEBUG, __VA_ARGS__)
+#define T_LOG_W(NAME, ...)  T_LOG_IMPL(NAME, WARN, __VA_ARGS__)
+#define T_LOG_E(NAME, ...)  T_LOG_IMPL(NAME, ERROR, __VA_ARGS__)
+#define T_LOG_F(NAME, ...)  T_LOG_IMPL(NAME, FATAL, __VA_ARGS__)
 
 namespace tools {
 namespace log {
@@ -36,16 +38,48 @@ enum LEVEL : uint8_t {
   NUM_LEVEL
 };
 
-/**
- * 用于字符转换
- * @param level 等级枚举
- * @return 等级字符串, 若未处于枚举范围则返回 UNKNOWN
- */
-const char* ToString(LEVEL level);
-
 } // level
 
-class Logger {
+/**
+ * 日志器配置
+ */
+struct Config {
+  std::string name;     // 日志器名
+  std::string pattern;  // 日志输出格式
+};
+
+/**
+ * 注册日志器
+ * @param cfg 日志器配置
+ * @return 注册是否成功
+ */
+bool RegisterLogger(const Config& cfg);
+
+/**
+ * 反注册日志器
+ * @param name 日志器名
+ */
+void UnregisterLogger(const std::string& name);
+
+/**
+ * 返回所有已注册日志器配置
+ * @return 日志器配置数组
+ */
+std::vector<std::weak_ptr<Config> > GetAllLoggers();
+
+/**
+ * 设置最低输出等级
+ * @param level 等级枚举
+ */
+void SetLevel(level::LEVEL level);
+
+/**
+ * 获取最低输出等级
+ * @return 等级枚举
+ */
+level::LEVEL GetLevel();
+
+class Log {
  public:
   /**
    * 构建流式输出
@@ -53,15 +87,17 @@ class Logger {
    * @param function 函数名
    * @param line 行号
    * @param level 等级
+   * @param name 日志器名
    */
-  Logger(const char* file,
-         const char* function,
-         uint64_t line,
-         level::LEVEL level);
+  Log(const char* file,
+      const char* function,
+      uint64_t line,
+      level::LEVEL level,
+      const char* name);
   /**
    * 在对象析构时处理缓存的字符串
    */
-  ~Logger();
+  ~Log();
   /**
    * 用于转换C风格输入为C++标准字符串
    * @param format 输出格式
@@ -76,7 +112,7 @@ class Logger {
    * @return 返回自身引用用于多次 << 调用, 比如 << ... << ...
    */
   template <typename T>
-  Logger& operator<<(const T& value) {
+  Log& operator<<(const T& value) {
     oss_ << value;
     return *this;
   }
@@ -85,7 +121,7 @@ class Logger {
    * @param func 函数指针
    * @return 返回自身引用
    */
-  Logger& operator<<(std::ostream& (*func)(std::ostream&)) {
+  Log& operator<<(std::ostream& (*func)(std::ostream&)) {
     oss_ << func;
     return *this;
   }
@@ -95,35 +131,9 @@ class Logger {
    * 用于存储缓冲字符串
    */
   std::ostringstream oss_;
-  /**
-   * 文件名
-   */
-  const char* file_;
-  /**
-   * 函数名
-   */
-  const char* function_;
-  /**
-   * 行号
-   */
-  uint64_t line_;
-  /**
-   * 等级
-   */
-  level::LEVEL level_;
+  class Impl;
+  std::unique_ptr<Impl> impl_;
 };
-
-/**
- * 设置最低输出等级
- * @param level 等级枚举
- */
-void SetLevel(level::LEVEL level);
-
-/**
- * 获取最低输出等级
- * @return 等级枚举
- */
-level::LEVEL GetLevel();
 
 } // log
 } // tools
