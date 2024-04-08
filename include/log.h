@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-03-29 14:36:59
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-08 17:16:23
+ * @LastEditTime: 2024-04-08 18:51:35
  * @Description: 
  */
 
@@ -16,11 +16,20 @@
 #define T_LOG_IMPL(NAME, LVL, ...) \
   tools::log::Log(__FILE__, __FUNCTION__, __LINE__, \
     tools::log::level::LVL, NAME) << tools::log::Log::CStringToStdString(__VA_ARGS__)
-#define T_LOG(NAME, ...)    T_LOG_IMPL(NAME, INFO, __VA_ARGS__)
-#define T_LOG_D(NAME, ...)  T_LOG_IMPL(NAME, DEBUG, __VA_ARGS__)
-#define T_LOG_W(NAME, ...)  T_LOG_IMPL(NAME, WARN, __VA_ARGS__)
-#define T_LOG_E(NAME, ...)  T_LOG_IMPL(NAME, ERROR, __VA_ARGS__)
-#define T_LOG_F(NAME, ...)  T_LOG_IMPL(NAME, FATAL, __VA_ARGS__)
+// Def Log
+#define LOG(...)    T_LOG_IMPL("", INFO, __VA_ARGS__)
+#define LOG_D(...)  T_LOG_IMPL("", DEBUG, __VA_ARGS__)
+#define LOG_W(...)  T_LOG_IMPL("", WARN, __VA_ARGS__)
+#define LOG_E(...)  T_LOG_IMPL("", ERROR, __VA_ARGS__)
+#define LOG_F(...)  T_LOG_IMPL("", FATAL, __VA_ARGS__)
+
+// Custom Log
+#define CLOG(NAME, ...)    T_LOG_IMPL(NAME, INFO, __VA_ARGS__)
+#define CLOG_D(NAME, ...)  T_LOG_IMPL(NAME, DEBUG, __VA_ARGS__)
+#define CLOG_W(NAME, ...)  T_LOG_IMPL(NAME, WARN, __VA_ARGS__)
+#define CLOG_E(NAME, ...)  T_LOG_IMPL(NAME, ERROR, __VA_ARGS__)
+#define CLOG_F(NAME, ...)  T_LOG_IMPL(NAME, FATAL, __VA_ARGS__)
+
 
 namespace tools {
 namespace log {
