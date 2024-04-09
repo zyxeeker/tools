@@ -2,21 +2,21 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-08 17:19:15
+ * @LastEditTime: 2024-04-09 17:26:55
  * @Description: 
  */
 
 #include "logger.h"
 
 #include <sstream>
-#include <iostream>
 
 namespace tools {
 namespace log {
 
 Logger::Logger(const Config& cfg)
     : cfg_(new Config(cfg)),
-      formatter_(new Formatter()) {
+      formatter_(new Formatter()),
+      outputter_(new Outputter(cfg)){
   formatter_->Parse(cfg_->pattern);
 }
 
@@ -29,13 +29,18 @@ void Logger::operator()(const Msg::Ptr& msg) {
   for (auto& i : formatter_->pattern()) {
     oss << (*i)(*msg);
   }
-  std::cout << oss.str();
+  if (outputter_->console()) {
+    (*outputter_->console()) << oss.str();
+  }
+  if (outputter_->file()) {
+    (*outputter_->file()) << oss.str();
+  }
 }
 
 LoggerMgr LoggerMgr::inst_;
 
 LoggerMgr::LoggerMgr()
-  : def_logger_(new Logger({"root", "%d [%p](%f:%l@%c) %m"})) {}
+    : def_logger_(new Logger({"root", "%d [%p](%f:%l@%c) %m", true, false, ""})) {}
 
 bool LoggerMgr::Register(const Config& cfg) {
   std::lock_guard<std::mutex> lk(mutex_);

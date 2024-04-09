@@ -14,8 +14,8 @@ int main() {
   LOG_E() << "HELLO TEST#" << 4 << std::endl;
   LOG_F() << "HELLO TEST#" << 5 << std::endl;
 
-  tools::log::RegisterLogger({"test#1", "[%p](%f:%l@%c) %m"});
-  tools::log::RegisterLogger({"test#2", "%d [%p](%f:%l) %m"});
+  tools::log::RegisterLogger({"test#1", "[%p](%f:%l@%c) %m", true, true, "test.log"});
+  tools::log::RegisterLogger({"test#2", "%d [%p](%f:%l) %m", true, false, ""});
 
   CLOG("test#1") << "test#1 TEST#" << 1 << std::endl;
   CLOG_D("test#1") << "test#1 TEST#" << 2 << std::endl;

@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-08 17:19:03
+ * @LastEditTime: 2024-04-09 17:26:49
  * @Description: 
  */
 
@@ -15,6 +15,7 @@
 
 #include "log.h"
 #include "formatter.h"
+#include "io.h"
 
 namespace tools {
 namespace log {
@@ -45,6 +46,7 @@ class Logger {
  private:
   std::shared_ptr<Config> cfg_;
   std::unique_ptr<Formatter> formatter_;
+  std::unique_ptr<Outputter> outputter_;
 };
 
 /**

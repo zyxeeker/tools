@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-03-29 14:36:59
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-08 18:51:35
+ * @LastEditTime: 2024-04-09 17:27:17
  * @Description: 
  */
 
@@ -53,8 +53,11 @@ enum LEVEL : uint8_t {
  * 日志器配置
  */
 struct Config {
-  std::string name;     // 日志器名
-  std::string pattern;  // 日志输出格式
+  std::string name;             // 名称/Key(Unique)
+  std::string pattern;          // 输出格式
+  bool toConsole;               // 是否输出至控制台
+  bool toFile;                  // 是否输出至文件
+  std::string fileName;         // 文件路径
 };
 
 /**
