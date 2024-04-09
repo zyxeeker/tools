@@ -16,6 +16,7 @@ int main() {
 
   tools::log::RegisterLogger({"test#1", "[%p](%f:%l@%c) %m", true, true, "test.log"});
   tools::log::RegisterLogger({"test#2", "%d [%p](%f:%l) %m", true, false, ""});
+  tools::log::RegisterLogger("test#3");
 
   CLOG("test#1") << "test#1 TEST#" << 1 << std::endl;
   CLOG_D("test#1") << "test#1 TEST#" << 2 << std::endl;
@@ -28,5 +29,11 @@ int main() {
   CLOG_W("test#2") << "test#2 TEST#" << 3 << std::endl;
   CLOG_E("test#2") << "test#2 TEST#" << 4 << std::endl;
   CLOG_F("test#2") << "test#2 TEST#" << 5 << std::endl;
+
+  CLOG("test#3") << "test#3 TEST#" << 1 << std::endl;
+  CLOG_D("test#3") << "test#3 TEST#" << 2 << std::endl;
+  CLOG_W("test#3") << "test#3 TEST#" << 3 << std::endl;
+  CLOG_E("test#3") << "test#3 TEST#" << 4 << std::endl;
+  CLOG_F("test#3") << "test#3 TEST#" << 5 << std::endl;
 
 }

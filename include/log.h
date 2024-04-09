@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-03-29 14:36:59
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-09 17:27:17
+ * @LastEditTime: 2024-04-09 17:41:59
  * @Description: 
  */
 
@@ -51,6 +51,13 @@ enum LEVEL : uint8_t {
 
 /**
  * 日志器配置
+ * 格式参数如下:
+ * p -- 日志等级
+ * f -- 文件名
+ * c -- 函数名
+ * l -- 行号
+ * m -- 消息
+ * eg. "%d [%p](%f:%l@%c) %m"
  */
 struct Config {
   std::string name;             // 名称/Key(Unique)
@@ -66,6 +73,13 @@ struct Config {
  * @return 注册是否成功
  */
 bool RegisterLogger(const Config& cfg);
+
+/**
+ * 以默认参数注册日志器
+ * @param name 名称/Key(Unique)
+ * @return 注册是否成功
+ */
+bool RegisterLogger(const std::string& name);
 
 /**
  * 反注册日志器

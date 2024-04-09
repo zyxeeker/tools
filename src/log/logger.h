@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-09 17:26:49
+ * @LastEditTime: 2024-04-09 17:42:20
  * @Description: 
  */
 
@@ -63,6 +63,12 @@ class LoggerMgr {
    * @return 是否成功
    */
   bool Register(const Config& cfg);
+  /**
+   * 默认参数注册日志器
+   * @param name 名称/Key(Unique)
+   * @return 是否成功
+   */
+  bool Register(const std::string& name);
   /**
    * 反注册日志器
    * @param key 日志器key

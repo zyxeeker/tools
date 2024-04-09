@@ -26,6 +26,10 @@ level::LEVEL GetLevel() {
   return LoggerMgr::GetInstance().level();
 }
 
+bool RegisterLogger(const std::string& name) {
+  return LoggerMgr::GetInstance().Register(name);
+}
+
 bool RegisterLogger(const Config &cfg) {
   return LoggerMgr::GetInstance().Register(cfg);
 }

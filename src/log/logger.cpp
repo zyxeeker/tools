@@ -2,13 +2,18 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-09 17:26:55
+ * @LastEditTime: 2024-04-09 17:42:11
  * @Description: 
  */
 
 #include "logger.h"
 
 #include <sstream>
+
+// 默认日志器格式
+#define LOGGER_DEF_PATTERN        "%d [%p](%f:%l@%c) %m"
+// 默认日志器配置
+#define LOGGER_DEF_CONFIG(NAME)   {NAME, LOGGER_DEF_PATTERN, true, false, ""}
 
 namespace tools {
 namespace log {
@@ -40,7 +45,7 @@ void Logger::operator()(const Msg::Ptr& msg) {
 LoggerMgr LoggerMgr::inst_;
 
 LoggerMgr::LoggerMgr()
-    : def_logger_(new Logger({"root", "%d [%p](%f:%l@%c) %m", true, false, ""})) {}
+    : def_logger_(new Logger(LOGGER_DEF_CONFIG("root"))) {}
 
 bool LoggerMgr::Register(const Config& cfg) {
   std::lock_guard<std::mutex> lk(mutex_);
@@ -49,6 +54,16 @@ bool LoggerMgr::Register(const Config& cfg) {
   }
   auto logger = std::make_shared<Logger>(cfg);
   loggers_.insert({cfg.name, logger});
+  return true;
+}
+
+bool LoggerMgr::Register(const std::string &name) {
+  std::lock_guard<std::mutex> lk(mutex_);
+  if (loggers_.count(name)) {
+    return false;
+  }
+  auto logger = std::make_shared<Logger>(Config LOGGER_DEF_CONFIG(name));
+  loggers_.insert({name, logger});
   return true;
 }
 
