@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-16 17:25:20
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-18 18:45:50
+ * @LastEditTime: 2024-04-19 18:08:36
  * @Description: 
  */
 
@@ -11,9 +11,113 @@
 
 #include <atomic>
 #include <array>
+#include <map>
+#include <vector>
+#include <queue>
 
 namespace tools {
 namespace mem {
+
+class FixedArena {
+  class Node {
+    struct Block {
+      inline explicit Block(const size_t& size)
+          : addr(nullptr) { addr = new int8_t[size]; }
+      inline ~Block() {
+        delete [] addr;
+      }
+      int8_t* addr;
+    };
+   public:
+    using UPtr = std::unique_ptr<Node>;
+    explicit Node(const size_t& size)
+        : block_size_(size) {
+      AllocateNewBlock();
+    }
+    ~Node() {
+      for (auto& i : blocks_) {
+        delete i;
+      }
+    }
+    void Allocate(int8_t*& ptr) {
+      auto _block = free_blocks_.empty() ? AllocateNewBlock() : free_blocks_.front();
+      ptr = _block->addr;
+      used_blocks_.insert({ _block->addr, _block });
+      free_blocks_.pop();
+    }
+    void Deallocate(int8_t*& ptr) {
+      auto res = used_blocks_.find(ptr);
+      if (res == used_blocks_.end()) return;
+      free_blocks_.push(res->second);
+      used_blocks_.erase(res);
+      ptr = nullptr;
+    }
+    inline size_t GetTotalSize() const { return blocks_.size() * block_size_; }
+    inline size_t GetInUsedSize() const { return used_blocks_.size() * block_size_; }
+    inline size_t GetFreeSize() const { return GetTotalSize() - GetInUsedSize(); }
+   private:
+    Block* AllocateNewBlock() {
+      auto _block = new Block(block_size_);;
+      blocks_.push_back(_block);
+      free_blocks_.push(_block);
+      return _block;
+    }
+   private:
+    std::vector<Block*> blocks_;
+    std::queue<Block*> free_blocks_;
+    std::map<int8_t*, Block*> used_blocks_;
+    size_t block_size_;
+  };
+ public:
+  FixedArena(std::initializer_list<size_t> size_list) {
+    for (auto size :size_list)
+      nodes_.insert({size, std::make_unique<Node>(size)});
+  }
+  ~FixedArena() = default;
+  void Allocate(size_t size, int8_t*& dst) {
+    // TODO: Aligned
+    auto res = nodes_.lower_bound(size);
+    if (res != nodes_.end()) {
+      res->second->Allocate(dst);
+      return;
+    }
+    auto ptr = std::make_unique<Node>(size);
+    ptr->Allocate(dst);
+    nodes_.insert({size, std::move(ptr)});
+  }
+  void Deallocate(int8_t*& dst) {
+    if (!dst) return;
+    for (auto& i : nodes_) {
+      i.second->Deallocate(dst);
+    }
+  }
+  inline size_t GetTotalSize() {
+    size_t size = 0;
+    for (auto &i : nodes_) {
+      size += i.second->GetTotalSize();
+    }
+    return size;
+  }
+  inline size_t GetInUsedSize() {
+    size_t size = 0;
+    for (auto &i : nodes_) {
+      size += i.second->GetInUsedSize();
+    }
+    return size;
+  }
+  inline size_t GetFreeSize() {
+    size_t size = 0;
+    for (auto &i : nodes_) {
+      size += i.second->GetFreeSize();
+    }
+    return size;
+  }
+  inline size_t GetNodeCount() {
+    return nodes_.size();
+  }
+ private:
+  std::map<size_t, Node::UPtr> nodes_;
+};
 
 template <class T, size_t Size>
 class RingBuffer {
