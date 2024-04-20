@@ -2,14 +2,13 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-16 17:25:20
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-19 18:08:36
+ * @LastEditTime: 2024-04-20 14:47:50
  * @Description: 
  */
 
 #ifndef MEM_HPP_
 #define MEM_HPP_
 
-#include <atomic>
 #include <array>
 #include <map>
 #include <vector>
@@ -142,33 +141,33 @@ class RingBuffer {
     if (count() == capacity()) return false;
     tail_->elem = elem;
     tail_ = tail_->next;
-    count_.fetch_add(1, std::memory_order_relaxed);
+    ++count_;
     return true;
   }
   bool Get(T& elem) {
     if (empty()) return false;
     elem = head_->elem;
     head_ = head_->next;
-    count_.fetch_sub(1, std::memory_order_relaxed);
+    --count_;
     return true;
   }
   inline bool empty() const {
-    return !count_.load();
+    return !count_;
   }
   inline size_t capacity() const {
     return capacity_;
   }
   inline size_t count() const {
-    return count_.load();
+    return count_;
   }
  private:
+  size_t count_{0};
   size_t capacity_ = Size;
   struct Item* begin_ = nullptr;
   struct Item* end_ = nullptr;
   struct Item* head_ = nullptr;
   struct Item* tail_ = nullptr;
   std::array<Item, Size> nodes_;
-  std::atomic_size_t count_{0};
 };
 
 } // mem
