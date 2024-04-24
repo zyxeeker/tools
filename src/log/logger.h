@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-24 15:40:49
+ * @LastEditTime: 2024-04-24 16:40:39
  * @Description: 
  */
 
@@ -102,7 +102,6 @@ class LoggerMgr {
   }
 
  private:
-//  static LoggerMgr inst_;
   std::mutex mutex_;
   /**
    * 全局输出最最低等级, 默认为 DEBUG

@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-24 15:40:39
+ * @LastEditTime: 2024-04-24 16:40:31
  * @Description: 
  */
 
@@ -11,7 +11,7 @@
 #include <sstream>
 
 // 默认日志器格式
-#define LOGGER_DEF_PATTERN        "%d [%p](%f:%l@%c) %m"
+#define LOGGER_DEF_PATTERN        "%d <%p> [%f:%l] [%c] %m"
 // 默认日志器配置
 #define LOGGER_DEF_CONFIG(NAME)   {NAME, LOGGER_DEF_PATTERN, true, false, ""}
 

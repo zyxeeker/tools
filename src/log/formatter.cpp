@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-03 14:18:39
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-08 17:17:11
+ * @LastEditTime: 2024-04-24 16:40:47
  * @Description: 
  */
 
@@ -49,7 +49,12 @@ class FileName : public Formatter::Item {
  public:
   ~FileName() = default;
   std::string operator()(const struct Msg& msg) override {
-    return msg.file;
+#ifdef _WIN32
+    auto str = std::strrchr(msg.file, '\\');
+#else
+    auto str = std::strrchr(msg.file, '/');
+#endif
+    return str ? str + 1 : msg.file;
   }
 };
 
