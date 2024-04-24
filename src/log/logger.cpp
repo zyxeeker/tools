@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-09 17:42:11
+ * @LastEditTime: 2024-04-24 15:40:39
  * @Description: 
  */
 
@@ -29,7 +29,7 @@ Logger::~Logger() = default;
 
 void Logger::operator()(const Msg::Ptr& msg) {
   // 格式器不存在时 OR 小于最低等级时忽略输出
-  if (!formatter_ || msg->level < LoggerMgr::GetInstance().level()) return;
+  if (!formatter_ || msg->level < Mgr::GetInstance().level()) return;
   std::ostringstream oss;
   for (auto& i : formatter_->pattern()) {
     oss << (*i)(*msg);
@@ -42,10 +42,10 @@ void Logger::operator()(const Msg::Ptr& msg) {
   }
 }
 
-LoggerMgr LoggerMgr::inst_;
-
 LoggerMgr::LoggerMgr()
     : def_logger_(new Logger(LOGGER_DEF_CONFIG("root"))) {}
+
+LoggerMgr::~LoggerMgr() = default;
 
 bool LoggerMgr::Register(const Config& cfg) {
   std::lock_guard<std::mutex> lk(mutex_);

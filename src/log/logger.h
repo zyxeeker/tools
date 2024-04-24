@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-04-07 18:19:54
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-09 17:42:20
+ * @LastEditTime: 2024-04-24 15:40:49
  * @Description: 
  */
 
@@ -12,6 +12,8 @@
 #include <mutex>
 #include <memory>
 #include <unordered_map>
+
+#include <pattern.hpp>
 
 #include "log.h"
 #include "formatter.h"
@@ -54,9 +56,8 @@ class Logger {
  */
 class LoggerMgr {
  public:
-  static LoggerMgr& GetInstance() {
-    return inst_;
-  }
+  LoggerMgr();
+  ~LoggerMgr();
   /**
    * 注册日志器
    * @param cfg 日志器配置
@@ -101,12 +102,7 @@ class LoggerMgr {
   }
 
  private:
-  LoggerMgr();
-  LoggerMgr(const LoggerMgr&);
-  LoggerMgr& operator=(const LoggerMgr&);
-
- private:
-  static LoggerMgr inst_;
+//  static LoggerMgr inst_;
   std::mutex mutex_;
   /**
    * 全局输出最最低等级, 默认为 DEBUG
@@ -121,6 +117,8 @@ class LoggerMgr {
    */
   Logger::Ptr def_logger_;
 };
+
+using Mgr = pattern::HungrySingleton<LoggerMgr>;
 
 } // log
 } // tools

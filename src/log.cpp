@@ -2,7 +2,7 @@
  * @Author: zyxeeker zyxeeker@gmail.com
  * @Date: 2024-03-29 14:44:17
  * @LastEditors: zyxeeker zyxeeker@gmail.com
- * @LastEditTime: 2024-04-08 11:15:16
+ * @LastEditTime: 2024-04-24 15:40:54
  * @Description: 
  */
 
@@ -19,27 +19,27 @@ namespace tools {
 namespace log {
 
 void SetLevel(level::LEVEL level) {
-  LoggerMgr::GetInstance().set_level(level >= level::NUM_LEVEL ? level::INFO : level);
+  Mgr::GetInstance().set_level(level >= level::NUM_LEVEL ? level::INFO : level);
 }
 
 level::LEVEL GetLevel() {
-  return LoggerMgr::GetInstance().level();
+  return Mgr::GetInstance().level();
 }
 
 bool RegisterLogger(const std::string& name) {
-  return LoggerMgr::GetInstance().Register(name);
+  return Mgr::GetInstance().Register(name);
 }
 
 bool RegisterLogger(const Config &cfg) {
-  return LoggerMgr::GetInstance().Register(cfg);
+  return Mgr::GetInstance().Register(cfg);
 }
 
 void UnregisterLogger(const std::string &name) {
-  return LoggerMgr::GetInstance().Unregister(name);
+  return Mgr::GetInstance().Unregister(name);
 }
 
 std::vector<std::weak_ptr<Config> > GetAllLoggers() {
-  return LoggerMgr::GetInstance().GetAllLoggers();
+  return Mgr::GetInstance().GetAllLoggers();
 }
 
 class Log::Impl {
@@ -53,7 +53,7 @@ class Log::Impl {
     : name_(name),
       msg_(new Msg{time, file, function, line, level, ""}) {}
   inline ~Impl() {
-    LoggerMgr::GetInstance().Output(name_, std::move(msg_));
+    Mgr::GetInstance().Output(name_, std::move(msg_));
   }
   inline void UpdateContent(const std::ostringstream& oss) {
     msg_->content = std::move(oss.str());
