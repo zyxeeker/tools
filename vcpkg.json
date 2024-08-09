@@ -6,5 +6,11 @@
     "name" : "nlohmann-json",
     "version>=" : "3.11.3",
     "$comment" : "    find_package(nlohmann_json CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)\n"
+  }, {
+    "name" : "nanomsg",
+    "version>=" : "1.2.1#1"
+  }, {
+    "name" : "gtest",
+    "version>=" : "1.14.0#1"
   } ]
 }
