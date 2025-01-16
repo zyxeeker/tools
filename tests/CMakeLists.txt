@@ -12,6 +12,7 @@ add_executable(${TEST}_cfg test_cfg.cpp)
 add_executable(${TEST}_pattern test_pattern.cpp)
 add_executable(${TEST}_var test_var.cpp)
 add_executable(${TEST}_cvt test_cvt.cpp)
+add_executable(${TEST}_rwlock test_rwlock.cpp)
 
 target_link_libraries(${TEST}_log l${CMAKE_PROJECT_NAME})
 target_link_libraries(${TEST}_thread l${CMAKE_PROJECT_NAME})
